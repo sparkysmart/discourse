@@ -15,7 +15,7 @@ class ChildThemeSerializer < ApplicationSerializer
 end
 
 class ThemeSerializer < ChildThemeSerializer
-  attributes :color_scheme
+  attributes :color_scheme, :color_scheme_id
   has_many :child_themes, serializer: ChildThemeSerializer, embed: :objects
   has_many :theme_fields, embed: :objects
 end

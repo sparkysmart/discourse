@@ -12,7 +12,6 @@ class Stylesheet::Manager
   @lock = Mutex.new
 
   def self.cache
-    return {} if Rails.env.development?
     @cache ||= DistributedCache.new("discourse_stylesheet")
   end
 

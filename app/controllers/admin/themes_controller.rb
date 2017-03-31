@@ -4,25 +4,26 @@ class Admin::ThemesController < Admin::AdminController
 
   def index
     @theme = Theme.order(:name).includes(:theme_fields)
-    @color_schemes = ColorScheme.where(versioned_id: nil).to_a
+    @color_schemes = ColorScheme.all.to_a
     light = ColorScheme.new(name: I18n.t("color_schemes.default"))
     @color_schemes.unshift(light)
 
     payload = {
-      themes: @theme,
+      themes: ActiveModel::ArraySerializer.new(@theme, each_serializer: ThemeSerializer),
       extras: {
-        color_schemes: @color_schemes
+        color_schemes: ActiveModel::ArraySerializer.new(@color_schemes, each_serializer: ColorSchemeSerializer)
       }
     }
 
     respond_to do |format|
-      format.json { render json: payload }
+      format.json { render json: payload}
     end
   end
 
   def create
-    @theme = Theme.new(name: theme_params[:name], user_id: current_user.id)
-
+    @theme = Theme.new(name: theme_params[:name],
+                       user_id: current_user.id,
+                       color_scheme_id: theme_params[:color_scheme_id])
     set_fields
 
     respond_to do |format|
@@ -37,7 +38,28 @@ class Admin::ThemesController < Admin::AdminController
 
   def update
     @theme = Theme.find(params[:id])
-    @theme.name = theme_params[:name]
+
+    @theme.name = theme_params[:name] if theme_params.key?(:name)
+
+    if theme_params.key?(:color_scheme_id)
+      @theme.color_scheme_id = theme_params[:color_scheme_id]
+    end
+
+    if theme_params.key?(:child_theme_ids)
+      expected = theme_params[:child_theme_ids].map(&:to_i)
+      @theme.child_theme_relation.to_a.each do |child|
+        if expected.include?(child.child_theme_id)
+          expected.reject!{|id| id == child.child_theme_id}
+        else
+          child.destroy
+        end
+      end
+
+      Theme.where(id: expected).each do |theme|
+        @theme.add_child_theme!(theme)
+      end
+
+    end
 
     set_fields
 
@@ -86,7 +108,10 @@ class Admin::ThemesController < Admin::AdminController
     def theme_params
       @theme_params ||=
         params.require(:theme)
-            .permit(:name, theme_fields: [:name, :target, :value])
+            .permit(:name,
+                    :color_scheme_id,
+                    theme_fields: [:name, :target, :value],
+                    child_theme_ids: [])
     end
 
     def set_fields

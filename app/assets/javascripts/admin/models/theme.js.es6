@@ -42,6 +42,32 @@ const Theme = RestModel.extend({
     }
   },
 
+  @computed("child_themes.@each")
+  child_theme_ids(childThemes) {
+    if (childThemes) {
+      return childThemes.map(theme => Ember.get(theme, "id"));
+    }
+  },
+
+  removeChildTheme(childTheme) {
+    const childThemes = this.get("child_themes");
+    const theme = childThemes.findBy("id", Ember.get(childTheme,"id"));
+    if (theme) {
+      childThemes.removeObject(theme);
+      return this.saveChanges("child_theme_ids");
+    }
+  },
+
+  addChildTheme(childTheme){
+    let childThemes = this.get("child_themes");
+    if (!childThemes){
+      childThemes = [];
+      this.set("child_themes", childThemes);
+    }
+    childThemes.push(childTheme);
+    return this.saveChanges("child_theme_ids");
+  },
+
   description: function() {
     return "" + this.name + (this.enabled ? ' (*)' : '');
   }.property('selected', 'name', 'enabled'),
@@ -49,9 +75,10 @@ const Theme = RestModel.extend({
   changed: false,
 
   saveChanges() {
-    return this.save(
-        this.getProperties("name", "theme_fields")
-    ).then(() => this.set("changed", false));
+    let fields = arguments.length > 0 ? arguments : ["name", "color_scheme_id", "theme_fields"];
+    const hash = this.getProperties.apply(this,fields);
+    return this.save(hash)
+      .then(() => this.set("changed", false));
   },
 
 });

@@ -38,9 +38,6 @@ class ColorScheme < ActiveRecord::Base
 
   alias_method :colors, :color_scheme_colors
 
-  scope :current_version, ->{ where(versioned_id: nil) }
-
-  after_destroy :destroy_versions
   after_save :publish_discourse_stylesheet
   after_save :dump_hex_cache
   after_destroy :dump_hex_cache
@@ -122,14 +119,6 @@ class ColorScheme < ActiveRecord::Base
     color_scheme_colors.map do |c|
       {name: c.name, hex: c.hex}
     end
-  end
-
-  def previous_version
-    ColorScheme.where(versioned_id: self.id).where('version < ?', self.version).order('version DESC').first
-  end
-
-  def destroy_versions
-    ColorScheme.where(versioned_id: self.id).destroy_all
   end
 
   def publish_discourse_stylesheet

@@ -13,8 +13,12 @@
   <p>Select your Color Scheme </p>
   <p>{{combo-box content=colorSchemes
                  nameProperty="name"
-                 value=model.color_scheme_id
+                 value=colorSchemeId
                  valueAttribute="id"}}
+     {{#if colorSchemeChanged}}
+        {{d-button action="changeScheme" class="btn-primary btn-small submit-edit" icon="check"}}
+        {{d-button action="cancelChangeScheme" class="btn-small cancel-edit" icon="times"}}
+     {{/if}}
   </p>
   {{#link-to 'adminCustomizeThemes.edit' model class="btn edit"}}{{i18n 'admin.customize.theme.edit'}}{{/link-to}}
 
@@ -23,8 +27,23 @@
   {{#link-to 'adminCustomizeThemes.edit' model.id "common" "scss" class="btn edit"}}{{i18n 'admin.customize.theme.edit'}}{{/link-to}}
   </p>
 
-  <h3>Included Themes</h3>
-  <p>Select custom themes to be included in current theme.</p>
+  {{#if availableChildThemes}}
+    <h3>Child Themes</h3>
+    <p>
+      <ul>
+        {{#each model.child_themes as |child|}}
+          <li>{{child.name}} {{d-button action="removeChildTheme" actionParam=child class="btn-small cancel-edit" icon="times"}}</li>
+        {{/each}}
+      </ul>
+    </p>
+    <p>{{combo-box content=availableChildThemes
+                 nameProperty="name"
+                 value=selectedChildThemeId
+                 valueAttribute="id"}}
+
+        {{#d-button action="addChildTheme" icon="plus"}}Add{{/d-button}}
+    </p>
+  {{/if}}
 
   <a class="btn export" target="_blank" href={{downloadUrl}}>{{fa-icon "download"}} {{i18n 'admin.export_json.button_text'}}</a>
 

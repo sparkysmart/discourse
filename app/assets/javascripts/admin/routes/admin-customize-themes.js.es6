@@ -6,8 +6,9 @@ export default Ember.Route.extend({
     return this.store.findAll('theme');
   },
 
-  setupController(controller, hash) {
-    this._super(controller, hash);
+  setupController(controller, model) {
+    this._super(controller, model);
+    // TODO ColorScheme to model
     controller.set("editingTheme", false);
   },
 

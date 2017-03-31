@@ -4,12 +4,12 @@ require_dependency 'stylesheet/manager'
 
 class Theme < ActiveRecord::Base
 
-  ENABLED_KEY = '7e202ef2-56d7-47d5-98d8-a9c8d15e57dd'
-
   @cache = DistributedCache.new('theme')
 
   belongs_to :color_scheme
   has_many :theme_fields
+  has_many :child_theme_relation, class_name: 'ChildTheme', foreign_key: 'parent_theme_id'
+  has_many :child_themes, through: :child_theme_relation, source: :child_theme
 
   before_create do
     self.key ||= SecureRandom.uuid
@@ -55,9 +55,9 @@ class Theme < ActiveRecord::Base
     @targets ||= Enum.new(common: 0, desktop: 1, mobile: 2)
   end
 
-  def child_themes
-    return @child_themes if @child_themes
-    @child_themes = []
+  def included_themes
+    return @included_themes if @included_themes
+    @included_themes = []
     return [] unless id
 
     uniq = Set.new
@@ -74,20 +74,20 @@ class Theme < ActiveRecord::Base
         next if uniq.include? theme.id
         next if theme.id == id
         added << theme.id
-        @child_themes << theme
+        @included_themes << theme
       end
 
       iterations += 1
     end
 
-    @child_themes
+    @included_themes
   end
 
   def resolve_baked_field(target, name)
 
     target = target.to_sym
 
-    theme_ids = [self.id] + (child_themes.map(&:id) || [])
+    theme_ids = [self.id] + (included_themes.map(&:id) || [])
     fields = ThemeField.where(target: [Theme.targets[target], Theme.targets[:common]])
                        .where(name: name.to_s)
                        .includes(:theme)
@@ -123,8 +123,8 @@ class Theme < ActiveRecord::Base
   end
 
   def add_child_theme!(theme)
-    ChildTheme.create!(parent_theme_id: id, child_theme_id: theme.id)
-    @child_themes = nil
+    child_theme_relation.create!(child_theme_id: theme.id)
+    @included_themes = nil
     save!
     remove_from_cache!
   end
