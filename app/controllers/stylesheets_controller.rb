@@ -26,13 +26,13 @@ class StylesheetsController < ApplicationController
       # calling this method ensures we have a cache for said target
       # we hold of re-compilation till someone asks for asset
       if target.include?("theme")
-        target,theme_id = target.split(/_(-?[0-9]+)/)
-        theme = Theme.find(theme_id)
+        split_target,theme_id = target.split(/_(-?[0-9]+)/)
+        theme = Theme.find(theme_id) if theme_id
       else
-        target,color_scheme_id = target.split(/_(-?[0-9]+)/)
+        split_target,color_scheme_id = target.split(/_(-?[0-9]+)/)
         theme = Theme.find_by(color_scheme_id: color_scheme_id)
       end
-      Stylesheet::Manager.stylesheet_link_tag(target, nil, theme&.key)
+      Stylesheet::Manager.stylesheet_link_tag(split_target, nil, theme&.key)
     end
 
     cache_time = request.env["HTTP_IF_MODIFIED_SINCE"]

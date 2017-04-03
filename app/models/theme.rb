@@ -7,8 +7,8 @@ class Theme < ActiveRecord::Base
   @cache = DistributedCache.new('theme')
 
   belongs_to :color_scheme
-  has_many :theme_fields
-  has_many :child_theme_relation, class_name: 'ChildTheme', foreign_key: 'parent_theme_id'
+  has_many :theme_fields, dependent: :destroy
+  has_many :child_theme_relation, class_name: 'ChildTheme', foreign_key: 'parent_theme_id', dependent: :destroy
   has_many :child_themes, through: :child_theme_relation, source: :child_theme
 
   before_create do
@@ -20,6 +20,9 @@ class Theme < ActiveRecord::Base
     changed_fields.each(&:save!)
     changed_fields.clear
     remove_from_cache!
+
+    @dependant_themes = nil
+    @included_themes = nil
   end
 
   after_destroy do
@@ -41,9 +44,19 @@ class Theme < ActiveRecord::Base
     (@cache[cache_key] = val || "").html_safe
   end
 
-  def self.remove_from_cache!(key, broadcast = true)
+  def self.remove_from_cache!(ids=nil)
     clear_cache!
-    MessageBus.publish('/site_customization', key: key) if broadcast
+    if ids
+      message = ids.map do |id|
+        ["mobile","desktop"].map do |prefix|
+          {
+            name: "/stylesheets/#{prefix}_theme_#{id}",
+            hash: SecureRandom.hex
+          }
+        end
+      end.flatten
+      MessageBus.publish('/file-change', message)
+    end
   end
 
   def self.clear_cache!
@@ -55,33 +68,59 @@ class Theme < ActiveRecord::Base
     @targets ||= Enum.new(common: 0, desktop: 1, mobile: 2)
   end
 
+  def dependant_themes
+    @dependant_themes ||= resolve_dependant_themes(:up)
+  end
+
   def included_themes
-    return @included_themes if @included_themes
-    @included_themes = []
+    @included_themes ||= resolve_dependant_themes(:down)
+  end
+
+  def resolve_dependant_themes(direction)
+
+    select_field,where_field=nil
+
+    if direction == :up
+      select_field = "parent_theme_id"
+      where_field = "child_theme_id"
+    elsif direction == :down
+      select_field = "child_theme_id"
+      where_field = "parent_theme_id"
+    else
+      raise "Unknown direction"
+    end
+
+    themes = []
     return [] unless id
 
     uniq = Set.new
+    uniq << id
 
     iterations = 0
     added = [id]
-    while added.length > 0 && iterations < 5
-      themes = Theme.where('id in (SELECT child_theme_id
-                                  FROM child_themes
-                                  WHERE parent_theme_id in (?))', added).to_a
 
-      added = []
-      themes.each do |theme|
-        next if uniq.include? theme.id
-        next if theme.id == id
-        added << theme.id
-        @included_themes << theme
-      end
+    while added.length > 0 && iterations < 5
 
       iterations += 1
+
+      new_themes = Theme.where("id in (SELECT #{select_field}
+                                  FROM child_themes
+                                  WHERE #{where_field} in (?))", added).to_a
+
+      added = []
+      new_themes.each do |theme|
+        unless uniq.include?(theme.id)
+          added << theme.id
+          uniq << theme.id
+          themes << theme
+        end
+      end
+
     end
 
-    @included_themes
+    themes
   end
+
 
   def resolve_baked_field(target, name)
 
@@ -100,7 +139,8 @@ class Theme < ActiveRecord::Base
   end
 
   def remove_from_cache!
-    self.class.remove_from_cache!(key)
+    ids = [self.id] + dependant_themes.map(&:id) if self.id
+    self.class.remove_from_cache!(ids)
   end
 
   def changed_fields

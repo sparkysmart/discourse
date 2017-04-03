@@ -2789,6 +2789,7 @@ en:
           common: "Common"
           desktop: "Desktop"
           mobile: "Mobile"
+          default_name: "{{name}} (*)"
           scss:
             text: "CSS"
             title: "Enter custom CSS, we accept all valid CSS and SCSS styles"

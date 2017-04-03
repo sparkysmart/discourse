@@ -57,6 +57,18 @@ SQL
       execute "UPDATE themes SET color_scheme_id=#{enabled_scheme_id.to_i} WHERE id=#{theme_id.to_i}"
     end
 
+    if enabled_scheme_id || (enabled_theme_count > 0)
+      puts "Setting default theme"
+      sql = <<SQL
+      INSERT INTO site_settings(name, data_type, value, created_at, updated_at)
+      VALUES('default_theme_key', 1, :key, :now, :now)
+SQL
+      sql = ActiveRecord::Base.sql_fragment(sql, now: Time.zone.now, key: theme_key)
+      execute(sql)
+    end
+
+
+
     remove_column :themes, :enabled
     remove_column :color_schemes, :enabled
   end

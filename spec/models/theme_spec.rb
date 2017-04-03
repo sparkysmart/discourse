@@ -54,6 +54,17 @@ describe Theme do
 
   end
 
+  it 'can correctly find parent themes' do
+    grandchild = Theme.create!(name: 'grandchild', user_id: user.id)
+    child = Theme.create!(name: 'child', user_id: user.id)
+    theme = Theme.create!(name: 'theme', user_id: user.id)
+
+    theme.add_child_theme!(child)
+    child.add_child_theme!(grandchild)
+
+    expect(grandchild.dependant_themes.length).to eq(2)
+  end
+
 
   it 'should correct bad html in body_tag_baked and head_tag_baked' do
     theme = Theme.new(user_id: -1, name: "test")

@@ -68,9 +68,14 @@ const Theme = RestModel.extend({
     return this.saveChanges("child_theme_ids");
   },
 
-  description: function() {
-    return "" + this.name + (this.enabled ? ' (*)' : '');
-  }.property('selected', 'name', 'enabled'),
+  @computed('name', 'default')
+  description: function(name, isDefault) {
+    if (isDefault) {
+      return I18n.t('admin.customize.theme.default_name', {name: name});
+    } else {
+      return name;
+    }
+  },
 
   changed: false,
 
