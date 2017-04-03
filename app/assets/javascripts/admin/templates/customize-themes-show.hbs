@@ -45,6 +45,17 @@
     </p>
   {{/if}}
 
+  <h3>Actions</h3>
+  <p>
+    {{#if model.default}}
+      {{i18n "admin.customize.theme.clear_default_help"}}<br>
+      {{d-button action="unmarkDefault" label="admin.customize.theme.clear_default"}}
+    {{else}}
+      {{i18n "admin.customize.theme.make_default_help"}}<br>
+      {{d-button action="makeDefault" label="admin.customize.theme.make_default"}}
+    {{/if}}
+  </p>
+
   <a class="btn export" target="_blank" href={{downloadUrl}}>{{fa-icon "download"}} {{i18n 'admin.export_json.button_text'}}</a>
 
   {{d-button action="destroy" label="admin.customize.delete" icon="trash" class="btn-danger"}}

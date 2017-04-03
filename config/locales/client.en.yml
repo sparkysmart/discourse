@@ -2790,6 +2790,10 @@ en:
           desktop: "Desktop"
           mobile: "Mobile"
           default_name: "{{name}} (*)"
+          make_default_help: "Theme is not enabled"
+          make_default: "Mark as Default"
+          clear_default_help: "Theme is enabled by default"
+          clear_default: "Clear Default"
           scss:
             text: "CSS"
             title: "Enter custom CSS, we accept all valid CSS and SCSS styles"

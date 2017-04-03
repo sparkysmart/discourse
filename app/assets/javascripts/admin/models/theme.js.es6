@@ -42,7 +42,7 @@ const Theme = RestModel.extend({
     }
   },
 
-  @computed("child_themes.@each")
+  @computed("childThemes.@each")
   child_theme_ids(childThemes) {
     if (childThemes) {
       return childThemes.map(theme => Ember.get(theme, "id"));
@@ -50,7 +50,7 @@ const Theme = RestModel.extend({
   },
 
   removeChildTheme(childTheme) {
-    const childThemes = this.get("child_themes");
+    const childThemes = this.get("childThemes");
     const theme = childThemes.findBy("id", Ember.get(childTheme,"id"));
     if (theme) {
       childThemes.removeObject(theme);
@@ -59,11 +59,7 @@ const Theme = RestModel.extend({
   },
 
   addChildTheme(childTheme){
-    let childThemes = this.get("child_themes");
-    if (!childThemes){
-      childThemes = [];
-      this.set("child_themes", childThemes);
-    }
+    let childThemes = this.get("childThemes");
     childThemes.push(childTheme);
     return this.saveChanges("child_theme_ids");
   },

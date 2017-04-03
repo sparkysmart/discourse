@@ -47,6 +47,7 @@ class Admin::ThemesController < Admin::AdminController
 
     if theme_params.key?(:child_theme_ids)
       expected = theme_params[:child_theme_ids].map(&:to_i)
+
       @theme.child_theme_relation.to_a.each do |child|
         if expected.include?(child.child_theme_id)
           expected.reject!{|id| id == child.child_theme_id}
@@ -107,11 +108,15 @@ class Admin::ThemesController < Admin::AdminController
 
     def theme_params
       @theme_params ||=
-        params.require(:theme)
+        begin
+          # deep munge is a train wreck, work around it for now
+          params[:theme][:child_theme_ids] ||= [] if params[:theme].key?(:child_theme_ids)
+          params.require(:theme)
             .permit(:name,
                     :color_scheme_id,
                     theme_fields: [:name, :target, :value],
                     child_theme_ids: [])
+        end
     end
 
     def set_fields
