@@ -49,18 +49,16 @@ const Theme = RestModel.extend({
     }
   },
 
-  removeChildTheme(childTheme) {
+  removeChildTheme(theme) {
     const childThemes = this.get("childThemes");
-    const theme = childThemes.findBy("id", Ember.get(childTheme,"id"));
-    if (theme) {
-      childThemes.removeObject(theme);
-      return this.saveChanges("child_theme_ids");
-    }
+    childThemes.removeObject(theme);
+    return this.saveChanges("child_theme_ids");
   },
 
-  addChildTheme(childTheme){
+  addChildTheme(theme){
     let childThemes = this.get("childThemes");
-    childThemes.push(childTheme);
+    childThemes.removeObject(theme);
+    childThemes.pushObject(theme);
     return this.saveChanges("child_theme_ids");
   },
 

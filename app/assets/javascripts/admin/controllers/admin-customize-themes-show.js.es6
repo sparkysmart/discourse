@@ -12,7 +12,18 @@ export default Ember.Controller.extend({
     return  colorSchemeId !== existingId;
   },
 
-  @computed("allThemes", "allThemes.length")
+  @computed("availableChildThemes", "model.childThemes.@each", "model")
+  selectableChildThemes(available, childThemes) {
+    let themes = [];
+    available.forEach(t=> {
+      if (childThemes.indexOf(t) === -1) {
+        themes.push(t);
+      };
+    });
+    return themes.length === 0 ? null : themes;
+  },
+
+  @computed("allThemes", "allThemes.length", "model")
   availableChildThemes(allThemes, count) {
     if (count === 1) {
       return null;
@@ -28,6 +39,11 @@ export default Ember.Controller.extend({
     });
 
     return themes;
+  },
+
+  validateSelectedChildThemeId() {
+    let available = this.get("availableChildThemes");
+    this.set("selectedChildThemeId", available && available[0] && (available[0].id));
   },
 
   actions: {
@@ -56,10 +72,12 @@ export default Ember.Controller.extend({
       let themeId = parseInt(this.get("selectedChildThemeId"));
       let theme = this.get("allThemes").findBy("id", themeId);
       this.get("model").addChildTheme(theme);
+      this.validateSelectedChildThemeId();
     },
 
     removeChildTheme(theme) {
       this.get("model").removeChildTheme(theme);
+      this.validateSelectedChildThemeId();
     }
   }
 

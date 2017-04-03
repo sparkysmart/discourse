@@ -31,18 +31,20 @@
     <h3>Child Themes</h3>
     <p>
       <ul>
-        {{#each model.child_themes as |child|}}
+        {{#each model.childThemes as |child|}}
           <li>{{child.name}} {{d-button action="removeChildTheme" actionParam=child class="btn-small cancel-edit" icon="times"}}</li>
         {{/each}}
       </ul>
     </p>
-    <p>{{combo-box content=availableChildThemes
-                 nameProperty="name"
-                 value=selectedChildThemeId
-                 valueAttribute="id"}}
+    {{#if selectableChildThemes}}
+      <p>{{combo-box content=selectableChildThemes
+                   nameProperty="name"
+                   value=selectedChildThemeId
+                   valueAttribute="id"}}
 
-        {{#d-button action="addChildTheme" icon="plus"}}Add{{/d-button}}
-    </p>
+          {{#d-button action="addChildTheme" icon="plus"}}Add{{/d-button}}
+      </p>
+    {{/if}}
   {{/if}}
 
   <h3>Actions</h3>
