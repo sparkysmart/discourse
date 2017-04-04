@@ -74,8 +74,7 @@ const Theme = RestModel.extend({
   changed: false,
 
   saveChanges() {
-    let fields = arguments.length > 0 ? arguments : ["name", "color_scheme_id", "theme_fields"];
-    const hash = this.getProperties.apply(this,fields);
+    const hash = this.getProperties.apply(this, arguments);
     return this.save(hash)
       .then(() => this.set("changed", false));
   },

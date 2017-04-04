@@ -91,14 +91,12 @@ export default Ember.Controller.extend({
     return !this.get('model.changed') || this.get('model.isSaving');
   }.property('model.changed', 'model.isSaving'),
 
-  //adminCustomizeCssHtml: Ember.inject.controller(),
-
   undoPreviewUrl: url('/?preview-style='),
   defaultStyleUrl: url('/?preview-style=default'),
 
   actions: {
     save() {
-      this.get('model').saveChanges();
+      this.get('model').saveChanges("theme_fields");
     },
 
     destroy() {

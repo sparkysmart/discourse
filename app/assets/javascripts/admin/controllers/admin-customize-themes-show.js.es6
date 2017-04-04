@@ -63,6 +63,14 @@ export default Ember.Controller.extend({
       this.set("editingName", false);
     },
 
+    applyDefault() {
+      this.get("model").saveChanges("default");
+    },
+
+    applyUserSelectable() {
+      this.get("model").saveChanges("user_selectable");
+    },
+
     addChildTheme() {
       let themeId = parseInt(this.get("selectedChildThemeId"));
       let theme = this.get("allThemes").findBy("id", themeId);

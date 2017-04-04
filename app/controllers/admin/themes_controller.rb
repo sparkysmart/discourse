@@ -23,6 +23,8 @@ class Admin::ThemesController < Admin::AdminController
   def create
     @theme = Theme.new(name: theme_params[:name],
                        user_id: current_user.id,
+                       default: theme_params[:default],
+                       user_selectable: theme_params[:user_selectable],
                        color_scheme_id: theme_params[:color_scheme_id])
     set_fields
 
@@ -39,10 +41,10 @@ class Admin::ThemesController < Admin::AdminController
   def update
     @theme = Theme.find(params[:id])
 
-    @theme.name = theme_params[:name] if theme_params.key?(:name)
-
-    if theme_params.key?(:color_scheme_id)
-      @theme.color_scheme_id = theme_params[:color_scheme_id]
+    [:name, :color_scheme_id, :default, :user_selectable].each do |field|
+      if theme_params.key?(field)
+        @theme.send("#{field}=", theme_params[field])
+      end
     end
 
     if theme_params.key?(:child_theme_ids)
@@ -114,6 +116,8 @@ class Admin::ThemesController < Admin::AdminController
           params.require(:theme)
             .permit(:name,
                     :color_scheme_id,
+                    :default,
+                    :user_selectable,
                     theme_fields: [:name, :target, :value],
                     child_theme_ids: [])
         end

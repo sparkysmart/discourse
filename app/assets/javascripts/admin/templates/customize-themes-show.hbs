@@ -45,15 +45,10 @@
     {{/if}}
   {{/if}}
 
-  <h3>Actions</h3>
+  <h3>Options</h3>
   <p>
-    {{#if model.default}}
-      {{i18n "admin.customize.theme.clear_default_help"}}<br>
-      {{d-button action="unmarkDefault" label="admin.customize.theme.clear_default"}}
-    {{else}}
-      {{i18n "admin.customize.theme.make_default_help"}}<br>
-      {{d-button action="makeDefault" label="admin.customize.theme.make_default"}}
-    {{/if}}
+    {{inline-edit-checkbox action="applyDefault" labelKey="admin.customize.theme.is_default" checked=model.default}}
+    {{inline-edit-checkbox action="applyUserSelectable" labelKey="admin.customize.theme.user_selectable" checked=model.user_selectable}}
   </p>
 
   <a class="btn export" target="_blank" href={{downloadUrl}}>{{fa-icon "download"}} {{i18n 'admin.export_json.button_text'}}</a>
