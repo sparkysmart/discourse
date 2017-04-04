@@ -76,6 +76,10 @@ COMPILED
     end
   end
 
+  def target_name
+    Theme.targets.invert[target].to_s
+  end
+
   before_save do
     if value_changed? && !value_baked_changed?
       self.value_baked = nil

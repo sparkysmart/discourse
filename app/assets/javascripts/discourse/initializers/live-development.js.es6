@@ -1,6 +1,7 @@
 import DiscourseURL from 'discourse/lib/url';
 
-function refreshCSS(node, hash) {
+function refreshCSS(node, hash, newHref) {
+
   let $orig = $(node);
 
   if ($orig.data('reloading')) {
@@ -15,13 +16,13 @@ function refreshCSS(node, hash) {
 
   const orig = $(node).data('orig');
 
-  if (!hash) {
-    window.__uniq = window.__uniq || 1;
-    hash = window.__uniq++;
+  let reloaded = $orig.clone(true);
+  if (hash) {
+    reloaded[0].href = orig + (orig.indexOf('?') >= 0 ? "&hash=" : "?hash=") + hash;
+  } else {
+    reloaded[0].href = newHref;
   }
 
-  let reloaded = $orig.clone(true);
-  reloaded[0].href = orig + (orig.indexOf('?') >= 0 ? "&hash=" : "?hash=") + hash;
   $orig.after(reloaded);
 
   setTimeout(()=>{
@@ -78,8 +79,8 @@ export default {
           document.location.reload(true);
         } else {
           $('link').each(function() {
-            if (this.href.match(me.name) && me.hash) {
-              refreshCSS(this, me.hash);
+            if (this.href.match(me.name) && (me.hash || me.new_href)) {
+              refreshCSS(this, me.hash, me.new_href);
             }
           });
         }

@@ -19,14 +19,21 @@ class Theme < ActiveRecord::Base
   after_save do
     changed_fields.each(&:save!)
     changed_fields.clear
-    remove_from_cache!
 
     @dependant_themes = nil
     @included_themes = nil
   end
 
+  after_save do
+    remove_from_cache!
+  end
+
   after_destroy do
     remove_from_cache!
+  end
+
+  after_commit do
+    notify_theme_change
   end
 
   def self.lookup_field(key, target, field)
@@ -44,19 +51,8 @@ class Theme < ActiveRecord::Base
     (@cache[cache_key] = val || "").html_safe
   end
 
-  def self.remove_from_cache!(ids=nil)
+  def self.remove_from_cache!(themes=nil)
     clear_cache!
-    if ids
-      message = ids.map do |id|
-        ["mobile","desktop"].map do |prefix|
-          {
-            name: "/stylesheets/#{prefix}_theme_#{id}",
-            hash: SecureRandom.hex
-          }
-        end
-      end.flatten
-      MessageBus.publish('/file-change', message)
-    end
   end
 
   def self.clear_cache!
@@ -66,6 +62,26 @@ class Theme < ActiveRecord::Base
 
   def self.targets
     @targets ||= Enum.new(common: 0, desktop: 1, mobile: 2)
+  end
+
+  def notify_theme_change
+    Stylesheet::Manager.clear_theme_cache!
+
+    themes = [self] + dependant_themes
+
+    message = themes.map do |theme|
+      [:mobile,:desktop].map do |target|
+        link = Stylesheet::Manager.stylesheet_link_tag("#{target}_theme".to_sym, 'all', theme.key)
+        if link
+          href = link.split(/["']/)[1]
+          {
+            name: "/stylesheets/#{target}_theme_#{theme.id}",
+            new_href: href
+          }
+        end
+      end
+    end.compact.flatten
+    MessageBus.publish('/file-change', message)
   end
 
   def dependant_themes
@@ -121,8 +137,11 @@ class Theme < ActiveRecord::Base
     themes
   end
 
-
   def resolve_baked_field(target, name)
+    list_baked_fields(target,name).map{|f| f.value_baked || f.value}.join("\n")
+  end
+
+  def list_baked_fields(target, name)
 
     target = target.to_sym
 
@@ -135,12 +154,11 @@ class Theme < ActiveRecord::Base
                             ) as X ON X.theme_id = theme_fields.theme_id")
                        .order('sort_column, target')
     fields.each(&:ensure_baked!)
-    fields.map{|f| f.value_baked || f.value}.join("\n")
+    fields
   end
 
   def remove_from_cache!
-    ids = [self.id] + dependant_themes.map(&:id) if self.id
-    self.class.remove_from_cache!(ids)
+    self.class.remove_from_cache!
   end
 
   def changed_fields
@@ -166,7 +184,6 @@ class Theme < ActiveRecord::Base
     child_theme_relation.create!(child_theme_id: theme.id)
     @included_themes = nil
     save!
-    remove_from_cache!
   end
 end
 

@@ -52,25 +52,19 @@ module Stylesheet
     register_import "embedded_theme" do
       next unless @theme_id
 
-      theme_import("embedded_theme.scss", :common, :embedded_scss)
+      theme_import(:common, :embedded_scss)
     end
 
     register_import "mobile_theme" do
       next unless @theme_id
 
-      [
-        theme_import("common_theme.scss", :common, :scss),
-        theme_import("mobile_theme.scss", :mobile, :scss)
-      ].compact
+      theme_import(:mobile, :scss)
     end
 
     register_import "desktop_theme" do
       next unless @theme_id
 
-      [
-        theme_import("common_theme.scss", :common, :scss),
-        theme_import("desktop_theme.scss", :desktop, :scss)
-      ].compact
+      theme_import(:desktop, :scss)
     end
 
     def initialize(options)
@@ -88,14 +82,23 @@ module Stylesheet
       end
     end
 
-    def theme_import(name, target, attr)
-      scss = theme.resolve_baked_field(target, attr)
+    def theme_import(target, attr)
+      fields = theme.list_baked_fields(target, attr)
 
-      if scss.blank?
-        nil
-      else
-        Import.new(name, source: scss)
-      end
+      fields.map do |field|
+        value = field.value
+        if value.present?
+          filename = "#{field.theme.id}/#{field.target_name}-#{field.name}-#{field.theme.name.parameterize}.scss"
+          with_comment = <<COMMENT
+// Theme: #{field.theme.name}
+// Target: #{field.target_name} #{field.name}
+// Last Edited: #{field.updated_at}
+
+#{value}
+COMMENT
+          Import.new(filename, source: with_comment)
+        end
+      end.compact
     end
 
     def theme

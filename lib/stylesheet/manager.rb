@@ -36,8 +36,7 @@ class Stylesheet::Manager
       builder = self.new(target, theme_key)
       builder.compile unless File.exists?(builder.stylesheet_fullpath)
       builder.ensure_digestless_file
-      path = Rails.env.development? ? builder.stylesheet_relpath_no_digest : builder.stylesheet_cdnpath
-      tag = %[<link href="#{path}" media="#{media}" rel="stylesheet" />]
+      tag = %[<link href="#{builder.stylesheet_path}" media="#{media}" rel="stylesheet" />]
       cache[cache_key] = tag
 
       tag.dup.html_safe
@@ -105,7 +104,12 @@ class Stylesheet::Manager
 
     rtl = @target.to_s =~ /_rtl$/
     css,source_map = begin
-      Stylesheet::Compiler.compile_asset(@target, rtl: rtl, theme_id: theme&.id)
+      Stylesheet::Compiler.compile_asset(
+        @target,
+         rtl: rtl,
+         theme_id: theme&.id,
+         source_map_file: source_map_filename
+      )
     rescue SassC::SyntaxError => e
       Rails.logger.error "Failed to compile #{@target} stylesheet: #{e.message}"
       [Stylesheet::Compiler.error_as_css(e, "#{@target} stylesheet"), nil]
@@ -151,7 +155,11 @@ class Stylesheet::Manager
   end
 
   def source_map_fullpath
-    "#{cache_fullpath}/#{stylesheet_filename}.map"
+    "#{cache_fullpath}/#{source_map_filename}"
+  end
+
+  def source_map_filename
+    "#{stylesheet_filename}.map"
   end
 
   def stylesheet_fullpath_no_digest
@@ -162,11 +170,22 @@ class Stylesheet::Manager
     "#{GlobalSetting.cdn_url}#{stylesheet_relpath}?__ws=#{Discourse.current_hostname}"
   end
 
+  def stylesheet_path
+    if Rails.env.development?
+      if @target.to_s =~ /theme/
+        stylesheet_relpath
+      else
+        stylesheet_relpath_no_digest
+      end
+    else
+      stylesheet_cdnpath
+    end
+  end
+
   def root_path
     "#{GlobalSetting.relative_url_root}/"
   end
 
-  # using uploads cause we already have all the routing in place
   def stylesheet_relpath
     "#{root_path}stylesheets/#{stylesheet_filename}"
   end
