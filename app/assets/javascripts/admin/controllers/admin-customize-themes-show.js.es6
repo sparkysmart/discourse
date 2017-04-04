@@ -41,11 +41,6 @@ export default Ember.Controller.extend({
     return themes;
   },
 
-  validateSelectedChildThemeId() {
-    let available = this.get("availableChildThemes");
-    this.set("selectedChildThemeId", available && available[0] && (available[0].id));
-  },
-
   actions: {
     cancelChangeScheme() {
       this.set("colorSchemeId", this.get("model.color_scheme_id") || "null");
@@ -72,12 +67,10 @@ export default Ember.Controller.extend({
       let themeId = parseInt(this.get("selectedChildThemeId"));
       let theme = this.get("allThemes").findBy("id", themeId);
       this.get("model").addChildTheme(theme);
-      this.validateSelectedChildThemeId();
     },
 
     removeChildTheme(theme) {
       this.get("model").removeChildTheme(theme);
-      this.validateSelectedChildThemeId();
     }
   }
 
