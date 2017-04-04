@@ -11,4 +11,9 @@ export default Ember.Route.extend({
     this.controllerFor('adminCustomizeColors').set('selectedItem', null);
   },
 
+  setupController(controller, model) {
+    controller.set("model", model);
+    this.controllerFor("adminCustomizeThemes").set("editingTheme", true);
+  },
+
 });

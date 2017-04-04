@@ -73,13 +73,6 @@ export default Ember.Controller.extend({
       color.undo();
     },
 
-    toggleEnabled: function() {
-      var selectedItem = this.get('selectedItem');
-      selectedItem.toggleProperty('enabled');
-      selectedItem.save({enabledOnly: true});
-      this.updateEnabled();
-    },
-
     save: function() {
       this.get('selectedItem').save();
       this.updateEnabled();

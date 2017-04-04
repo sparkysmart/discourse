@@ -11,19 +11,12 @@
 </div>
 
 {{#if selectedItem}}
-  <div class="current-style color-scheme">
+  <div class="color-scheme show-current-style">
     <div class="admin-container">
       <h1>{{text-field class="style-name" value=selectedItem.name}}</h1>
 
       <div class="controls">
         <button {{action "save"}} disabled={{selectedItem.disableSave}} class='btn'>{{i18n 'admin.customize.save'}}</button>
-        <button {{action "toggleEnabled"}} disabled={{selectedItem.disableEnable}} class="btn">
-          {{#if selectedItem.enabled}}
-            {{i18n 'disable'}}
-          {{else}}
-            {{i18n 'enable'}}
-          {{/if}}
-        </button>
         <button {{action "copy" selectedItem}} class='btn'><i class="fa fa-copy"></i> {{i18n 'admin.customize.copy'}}</button>
         <button {{action "destroy"}} class='btn btn-danger'><i class="fa fa-trash-o"></i> {{i18n 'admin.customize.delete'}}</button>
         <span class="saving {{unless selectedItem.savingStatus 'hidden'}}">{{selectedItem.savingStatus}}</span>

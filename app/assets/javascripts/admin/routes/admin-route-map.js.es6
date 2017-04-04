@@ -15,9 +15,12 @@ export default function() {
     });
 
     this.route('adminCustomize', { path: '/customize', resetNamespace: true } ,function() {
+
+
       this.route('adminCustomizeThemes', { path: 'themes', resetNamespace: true }, function() {
         this.route('show', {path: '/:theme_id'});
         this.route('edit', {path: '/:theme_id/:target/:field_name/edit'});
+        this.route('colors');
       });
 
       this.route('adminSiteText', { path: '/site_texts', resetNamespace: true }, function() {

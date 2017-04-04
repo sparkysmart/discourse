@@ -13,7 +13,6 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     controller.set("model", model);
     const parentController = this.controllerFor("adminCustomizeThemes");
-
     parentController.set("editingTheme", false);
     controller.set("allThemes", parentController.get("model"));
     controller.set("colorSchemes", parentController.get("model.extras.color_schemes"));

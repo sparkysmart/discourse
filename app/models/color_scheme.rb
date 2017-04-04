@@ -60,6 +60,15 @@ class ColorScheme < ActiveRecord::Base
     @base_colors
   end
 
+  def self.base_schemes
+    themes.map do |hash|
+      scheme = new(name: I18n.t("color_schemes.#{hash[:id]}"), theme_id: hash[:id])
+      scheme.colors = hash[:colors].map{|k,v| {name: k.to_s, hex: v}}
+      scheme.is_base = true
+      scheme
+    end
+  end
+
   def self.base
     return @base_color_scheme if @base_color_scheme
     @base_color_scheme = new(name: I18n.t('color_schemes.base_theme_name'))
