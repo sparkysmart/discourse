@@ -26,6 +26,7 @@ class Theme < ActiveRecord::Base
 
   after_save do
     remove_from_cache!
+    notify_scheme_change if color_scheme_id_changed?
   end
 
   after_destroy do
@@ -34,10 +35,6 @@ class Theme < ActiveRecord::Base
 
   after_commit do
     notify_theme_change
-
-    if color_scheme_id.changed?
-      Stylesheet::Manager.cache.clear
-    end
   end
 
   def self.lookup_field(key, target, field)
@@ -68,24 +65,38 @@ class Theme < ActiveRecord::Base
     @targets ||= Enum.new(common: 0, desktop: 1, mobile: 2)
   end
 
+  def notify_scheme_change
+    Stylesheet::Manager.cache.clear
+    message = refresh_message_for_targets(["desktop", "mobile", "admin"], self.color_scheme_id, self, Rails.env.development?)
+    MessageBus.publish('/file-change', message)
+  end
+
   def notify_theme_change
     Stylesheet::Manager.clear_theme_cache!
 
     themes = [self] + dependant_themes
 
     message = themes.map do |theme|
-      [:mobile,:desktop].map do |target|
-        link = Stylesheet::Manager.stylesheet_link_tag("#{target}_theme".to_sym, 'all', theme.key)
-        if link
-          href = link.split(/["']/)[1]
-          {
-            name: "/stylesheets/#{target}_theme_#{theme.id}",
-            new_href: href
-          }
-        end
-      end
+      refresh_message_for_targets([:mobile_theme,:desktop_theme], theme.id, theme)
     end.compact.flatten
     MessageBus.publish('/file-change', message)
+  end
+
+  def refresh_message_for_targets(targets, id, theme, add_cache_breaker=false)
+    targets.map do |target|
+      link = Stylesheet::Manager.stylesheet_link_tag(target.to_sym, 'all', theme.key)
+      if link
+        href = link.split(/["']/)[1]
+        if add_cache_breaker
+          href << (href.include?("?") ? "&" : "?")
+          href << SecureRandom.hex
+        end
+        {
+          name: "/stylesheets/#{target}#{id ? "_#{id}": ""}",
+          new_href: href
+        }
+      end
+    end
   end
 
   def dependant_themes
