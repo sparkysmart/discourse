@@ -2,30 +2,35 @@ require_dependency 'distributed_cache'
 
 class ColorScheme < ActiveRecord::Base
 
+  CUSTOM_SCHEMES = {
+    dark: {
+      "primary" =>           'dddddd',
+      "secondary" =>         '222222',
+      "tertiary" =>          '0f82af',
+      "quaternary" =>        'c14924',
+      "header_background" => '111111',
+      "header_primary" =>    '333333',
+      "highlight" =>         'a87137',
+      "danger" =>            'e45735',
+      "success" =>           '1ca551',
+      "love" =>              'fa6c8d'
+    }
+  }
+
   def self.themes
     base_with_hash = {}
     base_colors.each do |name, color|
-      base_with_hash[name] = "##{color}"
+      base_with_hash[name] = "#{color}"
     end
 
-    [
-      { id: 'default', colors: base_with_hash },
-      {
-        id: 'dark',
-        colors: {
-          "primary" =>           '#dddddd',
-          "secondary" =>         '#222222',
-          "tertiary" =>          '#0f82af',
-          "quaternary" =>        '#c14924',
-          "header_background" => '#111111',
-          "header_primary" =>    '#333333',
-          "highlight" =>         '#a87137',
-          "danger" =>            '#e45735',
-          "success" =>           '#1ca551',
-          "love" =>              '#fa6c8d'
-        }
-      }
+    list = [
+      { id: 'default', colors: base_with_hash }
     ]
+
+    CUSTOM_SCHEMES.each do |k,v|
+      list.push({id: k.to_s, colors: v})
+    end
+    list
   end
 
   def self.hex_cache
@@ -63,7 +68,7 @@ class ColorScheme < ActiveRecord::Base
   def self.base_schemes
     themes.map do |hash|
       scheme = new(name: I18n.t("color_schemes.#{hash[:id]}"), theme_id: hash[:id])
-      scheme.colors = hash[:colors].map{|k,v| {name: k.to_s, hex: v}}
+      scheme.colors = hash[:colors].map{|k,v| {name: k.to_s, hex: v.sub("#","")}}
       scheme.is_base = true
       scheme
     end
@@ -128,6 +133,21 @@ class ColorScheme < ActiveRecord::Base
     color_scheme_colors.map do |c|
       {name: c.name, hex: c.hex}
     end
+  end
+
+  def resolved_colors
+    resolved = ColorScheme.base_colors.dup
+    if theme_id && theme_id != "default"
+      if scheme = CUSTOM_SCHEMES[theme_id.to_sym]
+        scheme.each do |name, value|
+          resolved[name] = value
+        end
+      end
+    end
+    colors.each do |c|
+      resolved[c.name] = c.hex
+    end
+    resolved
   end
 
   def publish_discourse_stylesheet

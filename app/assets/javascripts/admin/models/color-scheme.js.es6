@@ -105,6 +105,7 @@ ColorScheme.reopenClass({
           id: colorScheme.id,
           name: colorScheme.name,
           is_base: colorScheme.is_base,
+          theme_id: colorScheme.theme_id,
           colors: colorScheme.colors.map(function(c) { return ColorSchemeColor.create({name: c.name, hex: c.hex, default_hex: c.default_hex}); })
         }));
       });

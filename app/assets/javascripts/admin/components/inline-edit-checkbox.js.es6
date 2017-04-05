@@ -6,6 +6,8 @@ export default Ember.Component.extend({
     this.set("checkedInternal", this.get("checked"));
   },
 
+  classNames: ['inline-edit'],
+
   @observes("checked")
   checkedChanged() {
     this.set("checkedInternal", this.get("checked"));

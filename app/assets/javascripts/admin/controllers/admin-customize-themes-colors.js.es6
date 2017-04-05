@@ -1,8 +1,14 @@
+import showModal from 'discourse/lib/show-modal';
+
 export default Ember.Controller.extend({
   onlyOverridden: false,
 
   baseColorScheme: function() {
     return this.get('model').findBy('is_base', true);
+  }.property('model.@each.id'),
+
+  baseColorSchemes: function() {
+    return this.get('model').filterBy('is_base', true);
   }.property('model.@each.id'),
 
   baseColors: function() {
@@ -57,12 +63,18 @@ export default Ember.Controller.extend({
       this.filterContent();
     },
 
-    newColorScheme() {
-      const newColorScheme = Em.copy(this.get('baseColorScheme'), true);
+    newColorSchemeWithBase(baseKey) {
+      const base = this.get('baseColorSchemes').findBy('theme_id', baseKey);
+      const newColorScheme = Em.copy(base, true);
       newColorScheme.set('name', I18n.t('admin.customize.colors.new_name'));
+      newColorScheme.set('theme_id', base.get('theme_id'));
       this.get('model').pushObject(newColorScheme);
       this.send('selectColorScheme', newColorScheme);
       this.set('onlyOverridden', false);
+    },
+
+    newColorScheme() {
+      showModal('color-scheme-select-base', { model: this.get('baseColorSchemes'), admin: true});
     },
 
     revert: function(color) {

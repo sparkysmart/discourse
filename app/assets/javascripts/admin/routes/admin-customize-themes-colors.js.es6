@@ -8,12 +8,11 @@ export default Ember.Route.extend({
 
   deactivate() {
     this._super();
-    this.controllerFor('adminCustomizeColors').set('selectedItem', null);
+    this.controllerFor('adminCustomizeThemesColors').set('selectedItem', null);
   },
 
   setupController(controller, model) {
     controller.set("model", model);
     this.controllerFor("adminCustomizeThemes").set("editingTheme", true);
-  },
-
+  }
 });

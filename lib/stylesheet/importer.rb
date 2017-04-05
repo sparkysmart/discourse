@@ -32,9 +32,9 @@ module Stylesheet
 
     register_import "theme_variables" do
       contents = ""
-      ColorScheme.base_colors.each do |n, base_hex|
-        hex_val = ColorScheme.hex_for_name(n) || base_hex
-        contents << "$#{n}: ##{hex_val} !default;\n"
+      colors = (@theme_id && theme.color_scheme) ? theme.color_scheme.resolved_colors : ColorScheme.base_colors
+      colors.each do |n, hex|
+        contents << "$#{n}: ##{hex} !default;\n"
       end
 
       Import.new("theme_variable.scss", source: contents)

@@ -2808,6 +2808,9 @@ en:
             text: "</body>"
             title: "HTML that will be inserted before the </body> tag"
         colors:
+          select_base:
+            title: "Select base color scheme"
+            description: "Base scheme:"
           title: "Colors"
           edit: "Edit Color Schemes"
           long_title: "Color Schemes"

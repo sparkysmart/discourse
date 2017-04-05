@@ -34,6 +34,10 @@ class Theme < ActiveRecord::Base
 
   after_commit do
     notify_theme_change
+
+    if color_scheme_id.changed?
+      Stylesheet::Manager.cache.clear
+    end
   end
 
   def self.lookup_field(key, target, field)

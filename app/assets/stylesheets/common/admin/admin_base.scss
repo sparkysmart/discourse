@@ -1840,6 +1840,12 @@ table#user-badges {
     background: $secondary;
   }
 }
+
+.inline-edit label {
+  display: inline-block;
+  margin-right: 20px;
+}
+
 .cbox0 { background: blend-primary-secondary(0%); }
 .cbox10 { background: blend-primary-secondary(10%); }
 .cbox20 { background: blend-primary-secondary(20%); }

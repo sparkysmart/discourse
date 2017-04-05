@@ -23,13 +23,13 @@ class Admin::ThemesController < Admin::AdminController
   def create
     @theme = Theme.new(name: theme_params[:name],
                        user_id: current_user.id,
-                       default: theme_params[:default],
-                       user_selectable: theme_params[:user_selectable],
+                       user_selectable: theme_params[:user_selectable] || false,
                        color_scheme_id: theme_params[:color_scheme_id])
     set_fields
 
     respond_to do |format|
       if @theme.save
+        update_default_theme
         log_theme_change(nil, theme_params)
         format.json { render json: @theme, status: :created}
       else
@@ -41,7 +41,7 @@ class Admin::ThemesController < Admin::AdminController
   def update
     @theme = Theme.find(params[:id])
 
-    [:name, :color_scheme_id, :default, :user_selectable].each do |field|
+    [:name, :color_scheme_id, :user_selectable].each do |field|
       if theme_params.key?(field)
         @theme.send("#{field}=", theme_params[field])
       end
@@ -68,6 +68,9 @@ class Admin::ThemesController < Admin::AdminController
 
     respond_to do |format|
       if @theme.save
+
+        update_default_theme
+
         log_theme_change(@theme, theme_params)
         format.json { render json: @theme, status: :created}
       else
@@ -107,6 +110,17 @@ class Admin::ThemesController < Admin::AdminController
   end
 
   private
+
+    def update_default_theme
+      if theme_params.key?(:default)
+        is_default = theme_params[:default]
+        if @theme.key == SiteSetting.default_theme_key && !is_default
+          SiteSetting.default_theme_key = ""
+        elsif is_default
+          SiteSetting.default_theme_key = @theme.key
+        end
+      end
+    end
 
     def theme_params
       @theme_params ||=

@@ -16,7 +16,6 @@ describe Admin::ThemesController do
         theme = Theme.new(name: 'my name', user_id: -1)
         theme.set_field(:common, :scss, '.body{color: black;}')
         theme.set_field(:desktop, :after_header, '<b>test</b>')
-
         theme.save!
 
         ColorScheme.create_from_base(name: "test", colors: [])
@@ -46,6 +45,19 @@ describe Admin::ThemesController do
     end
 
     context ' .update' do
+      it 'can change default theme' do
+        theme = Theme.create(name: 'my name', user_id: -1)
+        xhr :put, :update, id: theme.id, theme: { default: true }
+        expect(SiteSetting.default_theme_key).to eq(theme.key)
+      end
+
+      it 'can unset default theme' do
+        theme = Theme.create(name: 'my name', user_id: -1)
+        SiteSetting.default_theme_key = theme.key
+        xhr :put, :update, id: theme.id, theme: { default: false}
+        expect(SiteSetting.default_theme_key).to be_blank
+      end
+
       it 'updates a theme' do
 
         theme = Theme.new(name: 'my name', user_id: -1)
