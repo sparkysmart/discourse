@@ -128,11 +128,10 @@ class Wizard
 
           colors = []
           theme[:colors].each do |name, hex|
-            colors << {name: name, hex: hex[1..-1] }
+            colors << {name: name, hex: hex }
           end
 
           attrs = {
-            enabled: true,
             name: I18n.t("wizard.step.colors.fields.theme_id.choices.#{scheme_name}.label"),
             colors: colors,
             theme_id: scheme_name
@@ -148,6 +147,14 @@ class Wizard
             scheme = ColorScheme.new(attrs)
             scheme.save!
           end
+
+          default_theme = Theme.find_by(key: SiteSetting.default_theme_key)
+          unless default_theme
+            default_theme = Theme.new(name: "Default Theme", user_id: -1)
+          end
+          default_theme.color_scheme_id = scheme.id
+          default_theme.save!
+          SiteSetting.default_theme_key = default_theme.key
         end
       end
 

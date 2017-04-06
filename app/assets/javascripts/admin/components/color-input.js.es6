@@ -6,19 +6,21 @@
   @params valid is a boolean indicating if the input field is a valid color.
 **/
 export default Ember.Component.extend({
+  classNames: ['color-picker'],
   hexValueChanged: function() {
     var hex = this.get('hexValue');
+    let $text = this.$('input.hex-input');
+
     if (this.get('valid')) {
-      this.$('input').attr('style', 'color: ' + (this.get('brightnessValue') > 125 ? 'black' : 'white') + '; background-color: #' + hex + ';');
+      $text.attr('style', 'color: ' + (this.get('brightnessValue') > 125 ? 'black' : 'white') + '; background-color: #' + hex + ';');
     } else {
-      this.$('input').attr('style', '');
+      $text.attr('style', '');
     }
   }.observes('hexValue', 'brightnessValue', 'valid'),
 
-  _triggerHexChanged: function() {
-    var self = this;
-    Em.run.schedule('afterRender', function() {
-      self.hexValueChanged();
+  didInsertElement() {
+    Em.run.schedule('afterRender', ()=>{
+      this.hexValueChanged();
     });
-  }.on('didInsertElement')
+  }
 });
