@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title><%= content_for?(:title) ? yield(:title) + ' - ' + SiteSetting.title : SiteSetting.title %></title>
     <meta name="description" content="<%= @description_meta || SiteSetting.site_description %>">
+    <meta name="discourse_theme_key" content="<%= theme_key %>">
     <%= render partial: "layouts/head" %>
     <%= render partial: "common/special_font_face" %>
     <%= render partial: "common/discourse_stylesheet" %>

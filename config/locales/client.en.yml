@@ -174,6 +174,9 @@ en:
     bootstrap_mode_enabled: "To make launching your new site easier, you are in bootstrap mode. All new users will be granted trust level 1 and have daily email digest updates enabled. This will be automatically turned off when total user count exceeds %{min_users} users."
     bootstrap_mode_disabled: "Bootstrap mode will be disabled in next 24 hours."
 
+    themes:
+      default_description: "Default"
+
     s3:
       regions:
         us_east_1: "US East (N. Virginia)"
@@ -632,6 +635,7 @@ en:
       revoke_access: "Revoke Access"
       undo_revoke_access: "Undo Revoke Access"
       api_approved: "Approved:"
+      theme: "Theme"
 
       staff_counters:
         flags_given: "helpful flags"

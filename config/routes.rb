@@ -708,6 +708,8 @@ Discourse::Application.routes.draw do
   get "/safe-mode" => "safe_mode#index"
   post "/safe-mode" => "safe_mode#enter", as: "safe_mode_enter"
 
+  get "/themes/assets/:key" => "themes#assets"
+
   get "*url", to: 'permalinks#show', constraints: PermalinkConstraint.new
 
 end

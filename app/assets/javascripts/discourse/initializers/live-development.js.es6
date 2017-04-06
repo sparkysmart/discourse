@@ -1,6 +1,6 @@
 import DiscourseURL from 'discourse/lib/url';
 
-function refreshCSS(node, hash, newHref) {
+export function refreshCSS(node, hash, newHref) {
 
   let $orig = $(node);
 

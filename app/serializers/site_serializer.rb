@@ -38,7 +38,7 @@ class SiteSerializer < ApplicationSerializer
                     default: SiteSetting.default_theme_key)
            .order(:name)
            .pluck(:key, :name)
-           .map{|k,n| {theme_key: k, name: n}}
+           .map{|k,n| {theme_key: k, name: n, default: k == SiteSetting.default_theme_key}}
            .as_json
     end
   end
