@@ -2761,7 +2761,7 @@ en:
         import: "Import"
         import_title: "Select a file or paste text"
         delete: "Delete"
-        delete_confirm: "Delete this customization?"
+        delete_confirm: "Delete this theme?"
         about: "Modify CSS stylesheets and HTML headers on the site. Add a customization to start."
         color: "Color"
         opacity: "Opacity"

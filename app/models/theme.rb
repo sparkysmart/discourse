@@ -31,11 +31,14 @@ class Theme < ActiveRecord::Base
 
   after_destroy do
     remove_from_cache!
+    if SiteSetting.default_theme_key == self.key
+      SiteSetting.default_theme_key = nil
+    end
   end
 
-  after_commit do
-    notify_theme_change
-  end
+  after_commit ->(theme) do
+    theme.notify_theme_change
+  end, on: :update
 
   def self.lookup_field(key, target, field)
     return if key.blank?

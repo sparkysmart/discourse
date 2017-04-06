@@ -4,11 +4,7 @@ export default Ember.Controller.extend({
 
   @computed("colorSchemeId", "model.color_scheme_id")
   colorSchemeChanged(colorSchemeId, existingId) {
-    if (colorSchemeId === "null") {
-      colorSchemeId = null;
-    } else {
-      colorSchemeId = parseInt(colorSchemeId);
-    }
+    colorSchemeId = colorSchemeId === null ? null : parseInt(colorSchemeId);
     return  colorSchemeId !== existingId;
   },
 
@@ -16,7 +12,7 @@ export default Ember.Controller.extend({
   selectableChildThemes(available, childThemes) {
     let themes = [];
     available.forEach(t=> {
-      if (childThemes.indexOf(t) === -1) {
+      if (!childThemes || (childThemes.indexOf(t) === -1)) {
         themes.push(t);
       };
     });
@@ -43,11 +39,11 @@ export default Ember.Controller.extend({
 
   actions: {
     cancelChangeScheme() {
-      this.set("colorSchemeId", this.get("model.color_scheme_id") || "null");
+      this.set("colorSchemeId", this.get("model.color_scheme_id"));
     },
     changeScheme(){
       let schemeId = this.get("colorSchemeId");
-      this.set("model.color_scheme_id", schemeId === "null" ? null : parseInt(schemeId));
+      this.set("model.color_scheme_id", schemeId === null ? null : parseInt(schemeId));
       this.get("model").saveChanges("color_scheme_id");
     },
     startEditingName() {
@@ -79,7 +75,20 @@ export default Ember.Controller.extend({
 
     removeChildTheme(theme) {
       this.get("model").removeChildTheme(theme);
-    }
+    },
+
+    destroy() {
+      return bootbox.confirm(I18n.t("admin.customize.delete_confirm"), I18n.t("no_value"), I18n.t("yes_value"), result => {
+        if (result) {
+          const model = this.get('model');
+          model.destroyRecord().then(() => {
+            this.get('allThemes').removeObject(model);
+            this.transitionToRoute('adminCustomizeThemes');
+          });
+        }
+      });
+    },
+
   }
 
 });

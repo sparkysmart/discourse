@@ -99,18 +99,6 @@ export default Ember.Controller.extend({
       this.get('model').saveChanges("theme_fields");
     },
 
-    destroy() {
-      return bootbox.confirm(I18n.t("admin.customize.delete_confirm"), I18n.t("no_value"), I18n.t("yes_value"), result => {
-        if (result) {
-          const model = this.get('model');
-          model.destroyRecord().then(() => {
-            this.get('adminCustomizeCssHtml').get('model').removeObject(model);
-            this.transitionToRoute('adminCustomizeCssHtml');
-          });
-        }
-      });
-    },
-
     toggleMaximize: function() {
       this.toggleProperty('maximized');
     }

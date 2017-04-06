@@ -19,13 +19,12 @@ export default Ember.Route.extend({
 
     newTheme(obj) {
       obj = obj || {name: I18n.t("admin.customize.new_style")};
-      const item = this.store.createRecord('site-customization');
+      const item = this.store.createRecord('theme');
 
       const all = this.modelFor('adminCustomizeThemes');
-      const self = this;
-      item.save(obj).then(function() {
+      item.save(obj).then(() => {
         all.pushObject(item);
-        self.transitionTo('adminCustomizeTheme.show', item.get('id'), 'css');
+        this.transitionTo('adminCustomizeThemes.show', item.get('id'));
       }).catch(popupAjaxError);
     }
   }

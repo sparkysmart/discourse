@@ -27,6 +27,7 @@ export default Ember.Component.extend(bufferedRender({
     const content = this.get('content');
 
     if (content) {
+      let first = true;
       content.forEach(o => {
         let val = o[this.get('valueAttribute')];
         if (typeof val === "undefined") { val = o; }
@@ -38,7 +39,10 @@ export default Ember.Component.extend(bufferedRender({
         if (val === selected) {
           selectedFound = true;
         }
-        firstVal = firstVal || val;
+        if (first) {
+          firstVal = val;
+          first = false;
+        }
         buffer.push(`<option ${selectedText} value="${val}">${name}</option>`);
       });
     }
