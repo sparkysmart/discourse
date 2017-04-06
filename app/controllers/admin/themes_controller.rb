@@ -115,9 +115,9 @@ class Admin::ThemesController < Admin::AdminController
       if theme_params.key?(:default)
         is_default = theme_params[:default]
         if @theme.key == SiteSetting.default_theme_key && !is_default
-          SiteSetting.default_theme_key = ""
+          Theme.clear_default!
         elsif is_default
-          SiteSetting.default_theme_key = @theme.key
+          @theme.set_default!
         end
       end
     end

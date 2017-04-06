@@ -20,6 +20,8 @@ class Theme < ActiveRecord::Base
     changed_fields.each(&:save!)
     changed_fields.clear
 
+    Theme.expire_site_cache! if user_selectable_changed?
+
     @dependant_themes = nil
     @included_themes = nil
   end
@@ -32,13 +34,28 @@ class Theme < ActiveRecord::Base
   after_destroy do
     remove_from_cache!
     if SiteSetting.default_theme_key == self.key
-      SiteSetting.default_theme_key = nil
+      SiteSetting.clear_default
     end
   end
 
   after_commit ->(theme) do
     theme.notify_theme_change
   end, on: :update
+
+  def self.expire_site_cache!
+    Site.clear_anon_cache!
+    ApplicationSerializer.expire_cache_fragment!("user_themes")
+  end
+
+  def self.clear_default!
+    SiteSetting.default_theme_key = ""
+    expire_site_cache!
+  end
+
+  def set_default!
+    SiteSetting.default_theme_key = key
+    Theme.expire_site_cache!
+  end
 
   def self.lookup_field(key, target, field)
     return if key.blank?

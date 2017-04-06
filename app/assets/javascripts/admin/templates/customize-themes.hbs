@@ -5,7 +5,13 @@
     {{#each model as |theme|}}
       <li>
         {{#link-to 'adminCustomizeThemes.show' theme replace=true}}
-          {{theme.description}}
+          {{theme.name}}
+          {{#if theme.user_selectable}}
+            {{fa-icon "user"}}
+          {{/if}}
+          {{#if theme.default}}
+            {{fa-icon "asterisk"}}
+          {{/if}}
         {{/link-to}}
       </li>
     {{/each}}
