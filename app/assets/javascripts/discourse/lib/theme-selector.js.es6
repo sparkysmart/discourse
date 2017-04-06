@@ -12,11 +12,18 @@ function currentThemeKey() {
 }
 
 export function selectDefaultTheme(key) {
-  console.log(key);
+  if (key) {
+    $.cookie('preview_style', key);
+  } else {
+    $.removeCookie('preview_style');
+  }
 }
 
 export function previewTheme(key) {
   if (currentThemeKey() !== key) {
+
+    Discourse.set("assetVersion", "forceRefresh");
+
     ajax(`/themes/assets/${key ? key : 'default'}`).then(results => {
       let elem = _.first($(keySelector));
       if (elem) {
@@ -26,7 +33,7 @@ export function previewTheme(key) {
       results.themes.forEach(theme => {
         let node = $(`link[rel=stylesheet][data-target=${theme.target}]`)[0];
         if (node) {
-          refreshCSS(node, null, theme.url);
+          refreshCSS(node, null, theme.url, {force: true});
         }
       });
     });

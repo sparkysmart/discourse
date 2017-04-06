@@ -1,11 +1,17 @@
 import DiscourseURL from 'discourse/lib/url';
 
-export function refreshCSS(node, hash, newHref) {
+export function refreshCSS(node, hash, newHref, options) {
 
   let $orig = $(node);
 
   if ($orig.data('reloading')) {
-    return;
+
+    if (options && options.force) {
+      clearTimeout($orig.data('timeout'));
+      $orig.data("copy").remove();
+    } else {
+      return;
+    }
   }
 
   if (!$orig.data('orig')) {
@@ -25,10 +31,13 @@ export function refreshCSS(node, hash, newHref) {
 
   $orig.after(reloaded);
 
-  setTimeout(()=>{
+  let timeout = setTimeout(()=>{
     $orig.remove();
     reloaded.data('reloading', false);
   }, 2000);
+
+  $orig.data("timeout", timeout);
+  $orig.data("copy", reloaded);
 }
 
 //  Use the message bus for live reloading of components for faster development.
