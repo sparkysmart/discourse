@@ -15,6 +15,10 @@ export default Ember.Component.extend({
 
     if (this.get('valid')) {
       $text.attr('style', 'color: ' + (this.get('brightnessValue') > 125 ? 'black' : 'white') + '; background-color: #' + hex + ';');
+
+      if (this.get('pickerLoaded')) {
+        this.$('.picker').spectrum({color: "#" + this.get('hexValue')});
+      }
     } else {
       $text.attr('style', '');
     }
