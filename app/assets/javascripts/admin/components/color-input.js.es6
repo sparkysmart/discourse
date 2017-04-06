@@ -1,3 +1,5 @@
+import {default as loadScript, loadCSS } from 'discourse/lib/load-script';
+
 /**
   An input field for a color.
 
@@ -19,6 +21,17 @@ export default Ember.Component.extend({
   }.observes('hexValue', 'brightnessValue', 'valid'),
 
   didInsertElement() {
+    loadScript('/javascripts/spectrum.js').then(()=>{
+      loadCSS('/javascripts/spectrum.css').then(()=>{
+        Em.run.schedule('afterRender', ()=>{
+          this.$('.picker').spectrum({color: "#" + this.get('hexValue')})
+                           .on("change.spectrum", (me, color)=>{
+                             this.set('hexValue', color.toHexString().replace("#",""));
+                           });
+          this.set('pickerLoaded', true);
+        });
+      });
+    });
     Em.run.schedule('afterRender', ()=>{
       this.hexValueChanged();
     });
