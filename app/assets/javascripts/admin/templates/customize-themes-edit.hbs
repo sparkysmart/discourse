@@ -1,6 +1,6 @@
 <div class="current-style {{if maximized 'maximized'}}">
   <div class='wrapper'>
-    <h2><a>{{model.name}}</a> Custom Sections</h2>
+    <h2>{{i18n 'admin.customize.theme.edit_css_html'}} {{#link-to 'adminCustomizeThemes.show' model.id replace=true}}{{model.name}}{{/link-to}}</h2>
 
     <ul class='nav nav-pills target'>
       <li>
@@ -40,7 +40,7 @@
       </ul>
     </div>
 
-    <div class="admin-container">
+    <div>
       <div class='custom-ace-gutter'></div>
       {{ace-editor content=activeSection mode=activeSectionMode}}
     </div>

@@ -77,7 +77,6 @@ export default Ember.Controller.extend({
   },
 
   previewUrl: url('model.key', '/?preview-style=%@'),
-  downloadUrl: url('model.id', '/admin/site_customizations/%@'),
 
   maximizeIcon: function() {
     return this.get('maximized') ? 'compress' : 'expand';

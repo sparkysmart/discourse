@@ -30,8 +30,20 @@
   {{/if}}
 
   <h3>{{i18n "admin.customize.theme.css_html"}}</h3>
-  <p>{{i18n "admin.customize.theme.css_html_description"}}
-  {{#link-to 'adminCustomizeThemes.edit' model.id "common" "scss" class="btn edit"}}{{i18n 'admin.customize.theme.edit'}}{{/link-to}}
+  {{#if hasEditedFields}}
+  <p>{{i18n "admin.customize.theme.you_edited"}}</p>
+  <ul>
+  {{#each editedDescriptions as |desc|}}
+  <li>{{desc}}</li>
+  {{/each}}
+  </ul>
+  {{else}}
+  <p>
+  {{i18n "admin.customize.theme.edit_css_html_help"}}
+  </p>
+  {{/if}}
+  <p>
+  {{#link-to 'adminCustomizeThemes.edit' model.id "common" "scss" class="btn edit"}}{{i18n 'admin.customize.theme.edit_css_html'}}{{/link-to}}
   </p>
 
   {{#if availableChildThemes}}

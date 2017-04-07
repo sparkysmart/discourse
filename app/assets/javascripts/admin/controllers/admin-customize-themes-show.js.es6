@@ -1,6 +1,29 @@
 import { default as computed } from 'ember-addons/ember-computed-decorators';
+import { url } from 'discourse/lib/computed';
 
 export default Ember.Controller.extend({
+
+  @computed("model.theme_fields.@each")
+  hasEditedFields(fields) {
+    return fields.any(f=>!Em.isBlank(f.value));
+  },
+
+  @computed('model.theme_fields.@each')
+  editedDescriptions(fields) {
+    let descriptions = [];
+    let description = target => {
+      let current = fields.filter(field => field.target === target && !Em.isBlank(field.value));
+      if (current.length > 0) {
+        let text = I18n.t('admin.customize.theme.'+target);
+        let localized = current.map(f=>I18n.t('admin.customize.theme.'+f.name + '.text'));
+        return text + ": " + localized.join(" , ");
+      }
+    };
+    ['common','desktop','mobile'].forEach(target=> {
+      descriptions.push(description(target));
+    });
+    return descriptions.reject(d=>Em.isBlank(d));
+  },
 
   @computed("colorSchemeId", "model.color_scheme_id")
   colorSchemeChanged(colorSchemeId, existingId) {
@@ -38,6 +61,8 @@ export default Ember.Controller.extend({
 
     return themes;
   },
+
+  downloadUrl: url('model.id', '/admin/themes/%@'),
 
   actions: {
     cancelChangeScheme() {

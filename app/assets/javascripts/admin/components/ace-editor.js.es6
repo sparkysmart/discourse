@@ -14,6 +14,13 @@ export default Ember.Component.extend({
     }
   },
 
+  @observes('mode')
+  modeChanged() {
+    if (this._editor && !this._skipContentChangeEvent) {
+      this._editor.getSession().setMode("ace/mode/" + this.get('mode'));
+    }
+  },
+
   _destroyEditor: function() {
     if (this._editor) {
       this._editor.destroy();
