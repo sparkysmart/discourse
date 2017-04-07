@@ -43,6 +43,12 @@ class ColorScheme < ActiveRecord::Base
 
   alias_method :colors, :color_scheme_colors
 
+  before_save do
+    if self.id
+      self.version += 1
+    end
+  end
+
   after_save :publish_discourse_stylesheet
   after_save :dump_hex_cache
   after_destroy :dump_hex_cache
@@ -151,8 +157,15 @@ class ColorScheme < ActiveRecord::Base
   end
 
   def publish_discourse_stylesheet
-    MessageBus.publish("/discourse_stylesheet", self.name)
-    Stylesheet::Manager.cache.clear
+    if self.id
+      themes = Theme.where(color_scheme_id: self.id).to_a
+      if themes.present?
+        Stylesheet::Manager.cache.clear
+        themes.each do |theme|
+          theme.notify_scheme_change(_clear_manager_cache = false)
+        end
+      end
+    end
   end
 
   def dump_hex_cache

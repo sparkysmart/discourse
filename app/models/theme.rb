@@ -85,8 +85,8 @@ class Theme < ActiveRecord::Base
     @targets ||= Enum.new(common: 0, desktop: 1, mobile: 2)
   end
 
-  def notify_scheme_change
-    Stylesheet::Manager.cache.clear
+  def notify_scheme_change(clear_manager_cache=true)
+    Stylesheet::Manager.cache.clear if clear_manager_cache
     message = refresh_message_for_targets(["desktop", "mobile", "admin"], self.color_scheme_id, self, Rails.env.development?)
     MessageBus.publish('/file-change', message)
   end

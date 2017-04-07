@@ -30,8 +30,8 @@ describe ColorSchemeRevisor do
       ]))
       color_scheme.reload
 
+      expect(color_scheme.version).to eq(2)
       expect(color_scheme.colors.size).to eq(2)
-
       expect(color_scheme.colors.find_by(name: color.name).hex).to eq('BEEF99')
       expect(color_scheme.colors.find_by(name: 'bob').hex).to eq('AAAAAA')
     end

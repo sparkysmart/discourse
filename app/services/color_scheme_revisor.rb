@@ -14,8 +14,9 @@ class ColorSchemeRevisor
 
       @color_scheme.name    = @params[:name]    if @params.has_key?(:name)
       @color_scheme.theme_id = @params[:theme_id] if @params.has_key?(:theme_id)
+      has_colors = @params[:colors]
 
-      if @params[:colors]
+      if has_colors
         @params[:colors].each do |c|
           if existing = @color_scheme.colors_by_name[c[:name]]
             existing.update_attributes(c)
@@ -23,10 +24,10 @@ class ColorSchemeRevisor
             @color_scheme.color_scheme_colors << ColorSchemeColor.new(name: c[:name], hex: c[:hex])
           end
         end
+        @color_scheme.clear_colors_cache
       end
 
-      @color_scheme.save
-      @color_scheme.clear_colors_cache
+      @color_scheme.save if has_colors || @color_scheme.name_changed? || @color_scheme.theme_id_changed?
     end
     @color_scheme
   end

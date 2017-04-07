@@ -13,7 +13,6 @@ module Stylesheet
       @special_imports[name] = blk
     end
 
-
     register_import "plugins" do
       import_files(DiscoursePluginRegistry.stylesheets)
     end
@@ -36,7 +35,6 @@ module Stylesheet
       colors.each do |n, hex|
         contents << "$#{n}: ##{hex} !default;\n"
       end
-
       Import.new("theme_variable.scss", source: contents)
     end
 
