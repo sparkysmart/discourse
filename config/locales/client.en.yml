@@ -2825,7 +2825,7 @@ en:
           title: "Colors"
           edit: "Edit Color Schemes"
           long_title: "Color Schemes"
-          about: "Modify the colors used on the site. Create a new color scheme to start."
+          about: "Modify the colors used by your themes. Create a new color scheme to start."
           new_name: "New Color Scheme"
           copy_name_prefix: "Copy of"
           delete_confirm: "Delete this color scheme?"

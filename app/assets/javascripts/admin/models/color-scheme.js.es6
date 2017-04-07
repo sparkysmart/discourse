@@ -52,6 +52,7 @@ const ColorScheme = Discourse.Model.extend(Ember.Copyable, {
 
     if (!opts || !opts.enabledOnly) {
       data.name = this.name;
+      data.base_scheme_id = this.get('base_scheme_id');
       data.colors = [];
       _.each(this.get('colors'), function(c) {
         if (!self.id || c.get('changed')) {
@@ -88,18 +89,12 @@ const ColorScheme = Discourse.Model.extend(Ember.Copyable, {
 });
 
 var ColorSchemes = Ember.ArrayProxy.extend({
-  selectedItemChanged: function() {
-    var selected = this.get('selectedItem');
-    _.each(this.get('content'),function(i) {
-      return i.set('selected', selected === i);
-    });
-  }.observes('selectedItem')
 });
 
 ColorScheme.reopenClass({
   findAll: function() {
     var colorSchemes = ColorSchemes.create({ content: [], loading: true });
-    ajax('/admin/color_schemes').then(function(all) {
+    return ajax('/admin/color_schemes').then(function(all) {
       _.each(all, function(colorScheme){
         colorSchemes.pushObject(ColorScheme.create({
           id: colorScheme.id,
@@ -109,9 +104,8 @@ ColorScheme.reopenClass({
           colors: colorScheme.colors.map(function(c) { return ColorSchemeColor.create({name: c.name, hex: c.hex, default_hex: c.default_hex}); })
         }));
       });
-      colorSchemes.set('loading', false);
+      return colorSchemes;
     });
-    return colorSchemes;
   }
 });
 

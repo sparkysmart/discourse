@@ -141,6 +141,14 @@ class ColorScheme < ActiveRecord::Base
     end
   end
 
+  def base_colors
+    colors = nil
+    if base_scheme_id && base_scheme_id != "default"
+      colors = CUSTOM_SCHEMES[base_scheme_id.to_sym]
+    end
+    colors || ColorScheme.base_colors
+  end
+
   def resolved_colors
     resolved = ColorScheme.base_colors.dup
     if base_scheme_id && base_scheme_id != "default"
