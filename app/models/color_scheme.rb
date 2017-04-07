@@ -17,7 +17,7 @@ class ColorScheme < ActiveRecord::Base
     }
   }
 
-  def self.themes
+  def self.base_color_scheme_colors
     base_with_hash = {}
     base_colors.each do |name, color|
       base_with_hash[name] = "#{color}"
@@ -71,9 +71,9 @@ class ColorScheme < ActiveRecord::Base
     @base_colors
   end
 
-  def self.base_schemes
-    themes.map do |hash|
-      scheme = new(name: I18n.t("color_schemes.#{hash[:id]}"), theme_id: hash[:id])
+  def self.base_color_schemes
+    base_color_scheme_colors.map do |hash|
+      scheme = new(name: I18n.t("color_schemes.#{hash[:id]}"), base_scheme_id: hash[:id])
       scheme.colors = hash[:colors].map{|k,v| {name: k.to_s, hex: v.sub("#","")}}
       scheme.is_base = true
       scheme
@@ -143,8 +143,8 @@ class ColorScheme < ActiveRecord::Base
 
   def resolved_colors
     resolved = ColorScheme.base_colors.dup
-    if theme_id && theme_id != "default"
-      if scheme = CUSTOM_SCHEMES[theme_id.to_sym]
+    if base_scheme_id && base_scheme_id != "default"
+      if scheme = CUSTOM_SCHEMES[base_scheme_id.to_sym]
         scheme.each do |name, value|
           resolved[name] = value
         end
@@ -185,5 +185,5 @@ end
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  via_wizard   :boolean          default(FALSE), not null
-#  theme_id     :string
+#  base_scheme_id     :string
 #

@@ -19,6 +19,8 @@ export default Ember.Controller.extend({
     return themes.length === 0 ? null : themes;
   },
 
+  showSchemes: Em.computed.or("model.default", "model.user_selectable"),
+
   @computed("allThemes", "allThemes.length", "model")
   availableChildThemes(allThemes, count) {
     if (count === 1) {

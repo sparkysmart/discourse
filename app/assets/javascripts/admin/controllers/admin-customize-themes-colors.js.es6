@@ -64,10 +64,10 @@ export default Ember.Controller.extend({
     },
 
     newColorSchemeWithBase(baseKey) {
-      const base = this.get('baseColorSchemes').findBy('theme_id', baseKey);
+      const base = this.get('baseColorSchemes').findBy('base_scheme_id', baseKey);
       const newColorScheme = Em.copy(base, true);
       newColorScheme.set('name', I18n.t('admin.customize.colors.new_name'));
-      newColorScheme.set('theme_id', base.get('theme_id'));
+      newColorScheme.set('base_scheme_id', base.get('base_scheme_id'));
       this.get('model').pushObject(newColorScheme);
       this.send('selectColorScheme', newColorScheme);
       this.set('onlyOverridden', false);

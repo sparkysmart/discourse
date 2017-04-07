@@ -13,7 +13,7 @@ class ColorSchemeRevisor
     ColorScheme.transaction do
 
       @color_scheme.name    = @params[:name]    if @params.has_key?(:name)
-      @color_scheme.theme_id = @params[:theme_id] if @params.has_key?(:theme_id)
+      @color_scheme.base_scheme_id = @params[:base_scheme_id] if @params.has_key?(:base_scheme_id)
       has_colors = @params[:colors]
 
       if has_colors
@@ -27,7 +27,7 @@ class ColorSchemeRevisor
         @color_scheme.clear_colors_cache
       end
 
-      @color_scheme.save if has_colors || @color_scheme.name_changed? || @color_scheme.theme_id_changed?
+      @color_scheme.save if has_colors || @color_scheme.name_changed? || @color_scheme.base_scheme_id_changed?
     end
     @color_scheme
   end
