@@ -162,9 +162,15 @@ class User < ActiveRecord::Base
 
   def self.username_available?(username)
     lower = username.downcase
+    !reserved_username?(lower) && !User.where(username_lower: lower).exists?
+  end
 
-    User.where(username_lower: lower).blank? &&
-      SiteSetting.reserved_usernames.split("|").all? { |reserved| !lower.match('^' + Regexp.escape(reserved).gsub('\*', '.*') + '$') }
+  def self.reserved_username?(username)
+    lower = username.downcase
+
+    SiteSetting.reserved_usernames.split("|").any? do |reserved|
+      !!lower.match("^#{Regexp.escape(reserved).gsub('\*', '.*')}$")
+    end
   end
 
   def self.plugin_staff_user_custom_fields
@@ -734,7 +740,7 @@ class User < ActiveRecord::Base
     (tl_badge + other_badges).take(limit)
   end
 
-  def self.count_by_signup_date(start_date, end_date, group_id=nil)
+  def self.count_by_signup_date(start_date, end_date, group_id = nil)
     result = where('users.created_at >= ? AND users.created_at <= ?', start_date, end_date)
 
     if group_id
