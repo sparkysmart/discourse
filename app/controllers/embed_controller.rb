@@ -16,6 +16,27 @@ class EmbedController < ApplicationController
     render 'embed_error'
   end
 
+  def get_topicid
+    embed_url = params[:protocol]+'//'+params[:host_name]+'/'+params[:edvice_id]
+    puts embed_url
+    topic_id = nil
+    if embed_url.present?
+      topic_id = TopicEmbed.topic_id_for_embed(embed_url)
+      if topic_id.present?
+        url = URI.join(request.base_url.to_s, '/t/', topic_id.to_s)
+        redirect_to url.to_s
+      else
+        render 404
+      end
+    else
+      render 404
+    end
+  end
+
+  def not_found
+  raise ActionController::RoutingError.new('Not Found')
+  end
+
   def comments
     embed_url = params[:embed_url]
     embed_username = params[:discourse_username]

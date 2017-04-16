@@ -558,6 +558,10 @@ Discourse::Application.routes.draw do
   get 'embed/comments' => 'embed#comments'
   get 'embed/count' => 'embed#count'
   get 'embed/info' => 'embed#info'
+  get 'embed/:protocol/:host_name/:edvice_id' => 'embed#get_topicid'
+  # get 'embed/:embed_url' => 'embed#get_topicid', constraints: { embed_url:  /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(.[a-zA-Z]{2,63})?\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]/} , :format => false #this for http|https://oursite.com/product_id
+  # get 'embed/:embed_url' => 'embed#get_topicid', constraints: { embed_url:  /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(.[a-zA-Z]{2,63})?\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]/} , :format => false #this for http|https://oursite.com/product_id
+
 
   get "new-topic" => "list#latest"
   get "new-message" => "list#latest"
