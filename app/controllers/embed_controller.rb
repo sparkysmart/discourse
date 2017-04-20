@@ -17,7 +17,7 @@ class EmbedController < ApplicationController
   end
 
   def get_topicid
-    embed_url = params[:protocol]+'//'+params[:host_name]+'/'+params[:edvice_id]
+    embed_url = params[:device_url]
     puts embed_url
     topic_id = nil
     if embed_url.present?
@@ -26,15 +26,13 @@ class EmbedController < ApplicationController
         url = URI.join(request.base_url.to_s, '/t/', topic_id.to_s)
         redirect_to url.to_s
       else
-        render 404
+        # render 404
+        render nothing: true, status: 404
       end
     else
-      render 404
+      # render 404
+      render nothing: true, status: 404
     end
-  end
-
-  def not_found
-  raise ActionController::RoutingError.new('Not Found')
   end
 
   def comments
