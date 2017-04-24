@@ -35,6 +35,28 @@ class EmbedController < ApplicationController
     end
   end
 
+  def get_replies_num
+    embed_url = params[:device_url]
+    topic_id = nil
+    if embed_url.present?
+      topic_id = TopicEmbed.topic_id_for_embed(embed_url)
+      if topic_id.present?
+        @topic_embed = Topic.find_by(id: topic_id)
+        render json: {RepliesNum: @topic_embed.posts_count}
+      else
+        render nothing: true, status: 404
+      end
+
+      # @topic_embed = Topics.where(topic_id: topic_id).first
+      # topic_embed = TopicEmbed.where(embed_url: embed_url).includes(:topic).references(:topic)
+      # puts @topic_embed.posts_count
+
+    else
+      render nothing: true, status: 404
+    end
+
+  end
+
   def comments
     embed_url = params[:embed_url]
     embed_username = params[:discourse_username]

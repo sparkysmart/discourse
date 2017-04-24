@@ -559,6 +559,7 @@ Discourse::Application.routes.draw do
   get 'embed/count' => 'embed#count'
   get 'embed/info' => 'embed#info'
   get 'embed/topic' => 'embed#get_topicid'
+  get 'embed/getreplies' => 'embed#get_replies_num'
   # get 'embed/:embed_url' => 'embed#get_topicid', constraints: { embed_url:  /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(.[a-zA-Z]{2,63})?\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]/} , :format => false #this for http|https://oursite.com/product_id
   # get 'embed/:embed_url' => 'embed#get_topicid', constraints: { embed_url:  /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(.[a-zA-Z]{2,63})?\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]/} , :format => false #this for http|https://oursite.com/product_id
 
