@@ -165,8 +165,8 @@ en:
     other: "We're sorry, but new users are temporarily limited to %{count} replies in the same topic."
 
   embed:
-    start_discussion: "Start Discussion"
-    continue: "Continue Discussion"
+    start_discussion: "Be The First Review"
+    continue: "Review"
     error: "Error Embedding"
     referer: "Referer:"
     mismatch: "The referer did not match any of the following hosts:"

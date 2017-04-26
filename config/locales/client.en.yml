@@ -1569,7 +1569,7 @@ en:
         remove_banner: "Remove Banner Topic"
 
       reply:
-        title: 'Reply'
+        title: 'Review'
         help: 'begin composing a reply to this topic'
 
       clear_pin:
