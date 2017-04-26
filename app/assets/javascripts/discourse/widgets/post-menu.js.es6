@@ -129,13 +129,14 @@ registerButton('reply', attrs => {
     action: 'replyToPost',
     title: 'post.controls.reply',
     icon: 'reply',
-    className: 'reply create fade-out'
+    className: 'reply create fade-out',
+    label: 'topic.review.title'
   };
 
   if (!attrs.canCreatePost) { return; }
 
   if (!attrs.mobileView) {
-    args.label = 'topic.reply.title';
+    args.label = 'topic.review.title';
   }
 
   return args;
