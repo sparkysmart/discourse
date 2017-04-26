@@ -178,7 +178,7 @@ en:
 
     loading: "Loading Discussion..."
     permalink: "Permalink"
-    imported_from: "This is a companion discussion topic for the original entry at %{link}"
+    imported_from: ""
     in_reply_to: "▶ %{username}"
     replies:
       one: "1 reply"
