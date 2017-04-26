@@ -53,7 +53,7 @@ bs_BA:
     continue: "Continue Discussion"
     loading: "Loading Discussion..."
     permalink: "Permalink"
-    imported_from: "This is a companion discussion topic for the original entry at %{link}"
+    imported_from: ""
     in_reply_to: "▶ %{username}"
   spamming_host: "Sorry you cannot post a link to that host."
   user_is_suspended: "Suspended users are not allowed to post."
