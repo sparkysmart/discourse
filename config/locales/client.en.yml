@@ -1569,6 +1569,10 @@ en:
         remove_banner: "Remove Banner Topic"
 
       reply:
+        title: 'reply'
+        help: 'begin composing a reply to this topic'
+
+      review:
         title: 'Review'
         help: 'begin composing a reply to this topic'
 
