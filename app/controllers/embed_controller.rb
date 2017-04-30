@@ -1,9 +1,9 @@
 class EmbedController < ApplicationController
   skip_before_filter :check_xhr, :preload_json, :verify_authenticity_token
 
-  before_filter :get_topicid, except: [ :info ]
   before_filter :ensure_embeddable, except: [ :info ]
   before_filter :ensure_api_request, only: [ :info ]
+  skip_before_filter : ensure_embeddable, :only => [:get_topicid]
 
   layout 'embed'
 
