@@ -35,25 +35,24 @@ class TopicsController < ApplicationController
 
   skip_before_filter :check_xhr, only: [:show, :unsubscribe, :feed]
 
-  def get_topicid
-    byebug
-    embed_url = params[:device_url]
-    puts embed_url
-    topic_id = nil
-    if embed_url.present?
-      topic_id = TopicEmbed.topic_id_for_embed(embed_url)
-      if topic_id.present?
-        url = URI.join(request.base_url.to_s, '/t/', topic_id.to_s)
-        redirect_to url.to_s
-      else
-        # render 404
-        render nothing: true, status: 404
-      end
-    else
-      # render 404
-      render nothing: true, status: 404
-    end
-  end
+  # def get_topicid
+  #   byebug
+  #   embed_url = params[:device_url]
+  #   topic_id = nil
+  #   if embed_url.present?
+  #     topic_id = TopicEmbed.topic_id_for_embed(embed_url)
+  #     if topic_id.present?
+  #       url = URI.join(request.base_url.to_s, '/t/', topic_id.to_s)
+  #       redirect_to url.to_s
+  #     else
+  #       # render 404
+  #       render nothing: true, status: 404
+  #     end
+  #   else
+  #     # render 404
+  #     render nothing: true, status: 404
+  #   end
+  # end
 
   def id_for_slug
     topic = Topic.find_by(slug: params[:slug].downcase)
