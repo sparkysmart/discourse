@@ -3,7 +3,7 @@ class EmbedController < ApplicationController
 
   before_filter :ensure_embeddable, except: [ :info ]
   before_filter :ensure_api_request, only: [ :info ]
-  skip_before_filter : ensure_embeddable, :only => [:get_topicid]
+  skip_before_filter : ensure_embeddable, only: [:get_topicid]
 
   layout 'embed'
 
