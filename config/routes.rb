@@ -558,7 +558,6 @@ Discourse::Application.routes.draw do
   get 'embed/comments' => 'embed#comments'
   get 'embed/count' => 'embed#count'
   get 'embed/info' => 'embed#info'
-  get 'embed/topic' => 'embed#get_topicid'
   get 'embed/getreplies' => 'embed#get_replies_num'
   # get 'embed/:embed_url' => 'embed#get_topicid', constraints: { embed_url:  /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(.[a-zA-Z]{2,63})?\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]/} , :format => false #this for http|https://oursite.com/product_id
   # get 'embed/:embed_url' => 'embed#get_topicid', constraints: { embed_url:  /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(.[a-zA-Z]{2,63})?\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]/} , :format => false #this for http|https://oursite.com/product_id
@@ -568,6 +567,8 @@ Discourse::Application.routes.draw do
   get "new-message" => "list#latest"
 
   # Topic routes
+  get 'get/topic' => 'topics#get_topicid'
+
   get "t/id_for/:slug" => "topics#id_for_slug"
   get "t/:slug/:topic_id/print" => "topics#show", format: :html, print: true, constraints: {topic_id: /\d+/}
   get "t/:slug/:topic_id/wordpress" => "topics#wordpress", constraints: {topic_id: /\d+/}
