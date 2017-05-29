@@ -167,7 +167,7 @@ class TopicEmbed < ActiveRecord::Base
 
   def self.topic_id_for_embed(embed_url)
     embed_url = normalize_url(embed_url)
-    TopicEmbed.where("lower(embed_url) like ?", embed_url).pluck(:topic_id).first
+    TopicEmbed.where("lower(embed_url) LIKE ?", embed_url).pluck(:topic_id).first
   end
 
   def self.first_paragraph_from(html)
