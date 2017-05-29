@@ -19,7 +19,6 @@ class EmbedController < ApplicationController
 
   def get_topicid
     embed_url = params[:device_url]
-    puts embed_url
     topic_id = nil
     if embed_url.present?
       topic_id = TopicEmbed.topic_id_for_embed(embed_url)
