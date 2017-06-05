@@ -290,7 +290,7 @@ login:
     regex: "^[a-f0-9]+$"
   enable_sso:
     client: true
-    default: true
+    default: false
   sso_allows_all_return_paths: false
   enable_sso_provider: false
   verbose_sso_logging: false
@@ -298,9 +298,9 @@ login:
     hidden: true
     default: false
   sso_url:
-    default: 'https://www.sparkysmart.com/discourse/sso_login'
+    default: ''
     regex: '^https?:\/\/.+[^\/]$'
-  sso_secret: '42475120-465a-40e3-a888-49f95477d9fb'
+  sso_secret: ''
   sso_overrides_bio: false
   sso_overrides_email: false
   sso_overrides_username: false
