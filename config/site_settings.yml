@@ -23,22 +23,22 @@
 required:
   title:
     client: true
-    default: 'Discourse'
+    default: 'Sparky Smart'
   site_description:
-    default: ''
+    default: 'Smart Home Shop'
   contact_email:
     client: true
-    default: ''
+    default: 'community@sparkysmart.com'
     type: email
   contact_url:
     client: true
-    default: ''
+    default: 'https://www.sparkysmart.com/'
   notification_email:
-    default: 'noreply@unconfigured.discourse.org'
+    default: 'noreply@community.sparkysmart.com'
     type: email
     shadowed_by_global: true
   site_contact_username:
-    default: ''
+    default: 'SparkySmart'
     type: username
   logo_url:
     client: true
@@ -61,11 +61,11 @@ required:
     default: ''
     type: list
   company_short_name:
-    default: ''
+    default: 'Sparky Smart'
   company_full_name:
-    default: ''
+    default: 'Sparky Smart'
   company_domain:
-    default: ''
+    default: 'https://www.sparkysmart.com'
 
 basic:
   default_locale:
@@ -290,7 +290,7 @@ login:
     regex: "^[a-f0-9]+$"
   enable_sso:
     client: true
-    default: false
+    default: true
   sso_allows_all_return_paths: false
   enable_sso_provider: false
   verbose_sso_logging: false
@@ -298,9 +298,9 @@ login:
     hidden: true
     default: false
   sso_url:
-    default: ''
+    default: 'https://www.sparkysmart.com/discourse/sso_login'
     regex: '^https?:\/\/.+[^\/]$'
-  sso_secret: ''
+  sso_secret: '42475120-465a-40e3-a888-49f95477d9fb'
   sso_overrides_bio: false
   sso_overrides_email: false
   sso_overrides_username: false
@@ -337,7 +337,7 @@ users:
     max: 60
   reserved_usernames:
     type: list
-    default: "admin|moderator|administrator|mod|sys|system|community|info|you|name|username|user|nickname|discourse|discourseorg|discourseforum|support"
+    default: "admin|moderator|administrator|mod|sys|system|community|info|you|name|username|user|nickname|discourse|discourseorg|discourseforum|support|sparkysmart|sparky"
   min_password_length:
     client: true
     default: 10
@@ -360,7 +360,7 @@ users:
   email_editable: true
   logout_redirect:
     client: true
-    default: ''
+    default: 'https://www.sparkysmart.com/user/signout'
   full_name_required:
     client: true
     default: false
@@ -563,7 +563,7 @@ posting:
     default: true
     client: true
   emoji_set:
-    default: 'emoji_one'
+    default: 'Apple/International'
     client: true
     enum: 'EmojiSetSiteSetting'
   enforce_square_emoji:
@@ -709,14 +709,14 @@ email:
 files:
   max_image_size_kb:
     client: true
-    default: 3072
+    default: 5072
   max_attachment_size_kb:
     client: true
-    default: 3072
+    default: 5072
   max_image_megapixels:
     default: 40
     min: 5
-    max: 100
+    max: 1000
   authorized_extensions:
     client: true
     default: 'jpg|jpeg|png|gif'
@@ -728,10 +728,10 @@ files:
       default: true
   max_image_width:
     client: true
-    default: 690
+    default: 1000
   max_image_height:
     client: true
-    default: 500
+    default: 800
   download_remote_images_to_local:
     default:
       test: false
@@ -1321,7 +1321,7 @@ user_preferences:
     enum: 'MailingListModeSiteSetting'
     default: 0
   disable_mailing_list_mode:
-    default: false
+    default: true
     client: true
   default_email_always: false
   default_email_previous_replies:
@@ -1391,7 +1391,7 @@ user_api:
 tags:
   tagging_enabled:
     client: true
-    default: false
+    default: true
     refresh: true
   tag_style:
     client: true
@@ -1421,7 +1421,7 @@ tags:
     min: 1
   show_filter_by_tag:
     client: true
-    default: false
+    default: true
     refresh: true
   max_tags_in_filter_list:
     default: 30
