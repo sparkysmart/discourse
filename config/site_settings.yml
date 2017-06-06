@@ -1067,7 +1067,7 @@ embedding:
     default: ''
     hidden: true
   embed_by_username:
-    default: ''
+    default: 'SparkySmart'
     type: username
     hidden: true
   embed_username_key_from_feed:
@@ -1080,7 +1080,7 @@ embedding:
     default: ''
     hidden: true
   embed_whitelist_selector:
-    default: ''
+    default: 'img, a'
     hidden: true
   embed_blacklist_selector:
     default: ''
